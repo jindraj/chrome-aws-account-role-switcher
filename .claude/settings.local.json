@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(node create-icons.js)",
+      "Bash(node -e \"\nconst fs = require\\('fs'\\);\n// Basic syntax check via JSON parse for manifest\nconst manifest = JSON.parse\\(fs.readFileSync\\('manifest.json', 'utf8'\\)\\);\nconsole.log\\('manifest.json: OK'\\);\nconsole.log\\('  permissions:', manifest.permissions\\);\nconsole.log\\('  host_permissions:', manifest.host_permissions\\);\nconsole.log\\('  content_scripts:', manifest.content_scripts?.[0]?.matches\\);\n\n// Check all JS files can be parsed\n['background.js', 'popup.js', 'options.js', 'content.js'].forEach\\(f => {\n  try {\n    new Function\\(fs.readFileSync\\(f, 'utf8'\\)\\);\n    console.log\\(f + ': syntax OK \\(' + fs.readFileSync\\(f, 'utf8'\\).split\\('\\\\n'\\).length + ' lines\\)'\\);\n  } catch\\(e\\) {\n    console.error\\(f + ': SYNTAX ERROR - ' + e.message\\);\n  }\n}\\);\n\")"
+    ]
+  }
+}

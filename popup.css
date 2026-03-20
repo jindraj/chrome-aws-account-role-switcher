@@ -1,0 +1,351 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 340px;
+  min-height: 200px;
+  max-height: 560px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 13px;
+  background: #1a1a2e;
+  color: #e0e0e0;
+  overflow: hidden;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Header */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background: #16213e;
+  border-bottom: 1px solid #0f3460;
+  flex-shrink: 0;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo {
+  font-size: 20px;
+  color: #FF9900;
+}
+
+h1 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* Buttons */
+.icon-btn {
+  background: none;
+  border: none;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+  border-radius: 4px;
+  line-height: 1;
+  transition: color 0.15s, background 0.15s;
+}
+
+.icon-btn:hover {
+  color: #fff;
+  background: rgba(255,255,255,0.1);
+}
+
+.btn-primary {
+  background: #FF9900;
+  color: #000;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-primary:hover {
+  background: #e88900;
+}
+
+.btn-sm {
+  border: none;
+  border-radius: 3px;
+  padding: 3px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btn-danger {
+  background: #c0392b;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #a93226;
+}
+
+/* Banners */
+.sso-banner {
+  background: #0f3460;
+  border-bottom: 1px solid #1a5276;
+  padding: 10px 12px;
+  flex-shrink: 0;
+}
+
+.sso-banner-title {
+  font-weight: 700;
+  color: #FF9900;
+  margin-bottom: 6px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sso-banner-body {
+  color: #ccc;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.user-code {
+  margin-top: 6px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #FF9900;
+  letter-spacing: 4px;
+  font-family: 'Courier New', monospace;
+}
+
+.sso-banner-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.error-banner {
+  background: #4a1010;
+  border-bottom: 1px solid #7b1e1e;
+  padding: 8px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+#error-message {
+  flex: 1;
+  font-size: 12px;
+  color: #ff6b6b;
+  word-break: break-word;
+}
+
+/* Profile Container */
+#profile-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+#profile-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+#profile-container::-webkit-scrollbar-track {
+  background: #1a1a2e;
+}
+
+#profile-container::-webkit-scrollbar-thumb {
+  background: #0f3460;
+  border-radius: 2px;
+}
+
+.loading, .empty-state {
+  padding: 24px 16px;
+  text-align: center;
+  color: #666;
+  font-size: 13px;
+}
+
+.empty-state p {
+  margin-bottom: 12px;
+}
+
+/* Profile Tree */
+.profile-group {
+  margin-bottom: 2px;
+}
+
+/* Root (SSO) profile row */
+.profile-root {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: #16213e;
+  border-left: 3px solid #FF9900;
+  cursor: default;
+  user-select: none;
+}
+
+.profile-root-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-name {
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-meta {
+  font-size: 11px;
+  color: #888;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.badge-sso {
+  background: #1a5276;
+  color: #5dade2;
+}
+
+.badge-role {
+  background: #1a3a1a;
+  color: #58d68d;
+}
+
+/* Child (chained) profile row */
+.profile-children {
+  padding-left: 0;
+}
+
+.profile-child {
+  display: flex;
+  align-items: center;
+  padding: 7px 12px 7px 28px;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  transition: background 0.1s;
+  position: relative;
+}
+
+.profile-child::before {
+  content: '↳';
+  position: absolute;
+  left: 14px;
+  color: #555;
+  font-size: 11px;
+}
+
+.profile-child:hover {
+  background: #1e2d50;
+  border-left-color: #5dade2;
+}
+
+.profile-child:active {
+  background: #243868;
+}
+
+.profile-child-left {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Grandchildren (deeper chains) */
+.profile-grandchild {
+  padding-left: 44px;
+}
+
+.profile-grandchild::before {
+  left: 30px;
+}
+
+/* Switch button */
+.btn-switch {
+  background: none;
+  border: 1px solid #2c4a7a;
+  color: #7fb3e8;
+  border-radius: 4px;
+  padding: 3px 10px;
+  font-size: 11px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+
+.btn-switch:hover {
+  background: #1a4080;
+  border-color: #5dade2;
+  color: #fff;
+}
+
+.btn-switch:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-switch.loading {
+  opacity: 0.6;
+}
+
+/* Chain depth indicator */
+.chain-depth {
+  font-size: 10px;
+  color: #555;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+
+/* Multi-session indicator dot */
+.session-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2ecc71;
+  flex-shrink: 0;
+  margin-right: 6px;
+  box-shadow: 0 0 4px #2ecc71;
+  display: inline-block;
+}
+
+/* Separator */
+.separator {
+  height: 1px;
+  background: #0f1f3d;
+  margin: 4px 0;
+}
+
+.hidden {
+  display: none !important;
+}

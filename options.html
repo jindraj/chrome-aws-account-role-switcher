@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AWS Role Switcher — Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div id="app">
+    <header>
+      <span class="logo">⬡</span>
+      <h1>AWS Role Switcher — Settings</h1>
+    </header>
+
+    <main>
+      <section class="card">
+        <h2>AWS Config</h2>
+        <p class="hint">
+          Paste your <code>~/.aws/config</code> content here. The extension supports SSO profiles and
+          role chaining via <code>source_profile</code>.
+        </p>
+
+        <div class="example-hint">
+          <strong>Supported format:</strong>
+          <pre>[profile base-sso]
+sso_account_id = 123456789012
+sso_role_name = AdministratorAccess
+sso_region = eu-west-1
+sso_start_url = https://myorg.awsapps.com/start
+
+[profile child-role]
+region = eu-west-1
+role_arn = arn:aws:iam::999999999999:role/my-role
+source_profile = base-sso
+external_id = optional-external-id
+
+[profile grandchild-role]
+region = eu-west-1
+role_arn = arn:aws:iam::888888888888:role/another-role
+source_profile = child-role</pre>
+        </div>
+
+        <textarea
+          id="config-textarea"
+          placeholder="Paste your ~/.aws/config content here..."
+          spellcheck="false"
+        ></textarea>
+
+        <div class="actions">
+          <span id="save-status" class="save-status"></span>
+          <button id="btn-save" class="btn-primary">Save</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>SSO Sessions</h2>
+        <p class="hint">Manage cached SSO authentication tokens.</p>
+        <div id="sso-tokens-list">
+          <div class="loading">Loading...</div>
+        </div>
+        <div class="actions">
+          <button id="btn-clear-all-sso" class="btn-danger">Clear All SSO Tokens</button>
+        </div>
+      </section>
+
+      <section class="card info-card">
+        <h2>How it works</h2>
+        <ol>
+          <li>Configure your AWS profiles in the text area above (same format as <code>~/.aws/config</code>).</li>
+          <li>Click the extension icon to see all configured profiles.</li>
+          <li>Click <strong>Switch</strong> on any profile.</li>
+          <li>If the profile uses SSO, a browser tab opens for you to log in. After login, the extension automatically continues.</li>
+          <li>For chained profiles, the extension automatically follows the <code>source_profile</code> chain using <code>sts:AssumeRole</code>.</li>
+          <li>A new tab opens with the AWS console logged in as the target role.</li>
+        </ol>
+        <p class="note">
+          <strong>Note:</strong> When using chained temporary credentials, AWS limits sessions to 1 hour maximum.
+          SSO tokens are cached for up to 8 hours (or until expiry).
+        </p>
+      </section>
+    </main>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
