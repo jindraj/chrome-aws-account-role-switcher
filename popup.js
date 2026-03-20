@@ -1,5 +1,8 @@
 // popup.js
 
+let _tree = [];
+let _openProfiles = new Set();
+
 async function sendMessage(msg) {
   return chrome.runtime.sendMessage(msg);
 }
@@ -170,6 +173,42 @@ function attachSwitchButton(row, profileName, leftEl) {
   row.addEventListener('click', () => btn.click());
 }
 
+function nodeMatchesQuery(node, q) {
+  const profile = node.profile;
+  const name = node.name.toLowerCase();
+  if (name.includes(q)) return true;
+  if (profile.sso_account_id && profile.sso_account_id.toLowerCase().includes(q)) return true;
+  if (profile.sso_role_name && profile.sso_role_name.toLowerCase().includes(q)) return true;
+  if (profile.role_arn && profile.role_arn.toLowerCase().includes(q)) return true;
+  return false;
+}
+
+function filterNode(node, q) {
+  const selfMatch = nodeMatchesQuery(node, q);
+  const filteredChildren = node.children
+    .map(c => filterNode(c, q))
+    .filter(Boolean);
+  if (selfMatch || filteredChildren.length > 0) {
+    return { ...node, children: selfMatch ? node.children : filteredChildren };
+  }
+  return null;
+}
+
+function renderTree(tree, openProfiles) {
+  const treeEl = document.getElementById('profile-tree');
+  treeEl.innerHTML = '';
+  let first = true;
+  tree.forEach(rootNode => {
+    if (!first) {
+      const sep = document.createElement('div');
+      sep.className = 'separator';
+      treeEl.appendChild(sep);
+    }
+    treeEl.appendChild(buildProfileNode(rootNode, 0, openProfiles));
+    first = false;
+  });
+}
+
 async function renderProfiles() {
   const loading = document.getElementById('loading');
   const noConfig = document.getElementById('no-config');
@@ -189,8 +228,7 @@ async function renderProfiles() {
   const { profiles, tree } = profilesResult;
   const tabSessions = tabResult?.tabSessions ?? {};
 
-  // Build a set of profile names that have open tabs
-  const openProfiles = new Set(
+  _openProfiles = new Set(
     Object.values(tabSessions)
       .map(s => s.profileName)
       .filter(Boolean)
@@ -203,19 +241,9 @@ async function renderProfiles() {
     return;
   }
 
+  _tree = tree;
   treeEl.classList.remove('hidden');
-  treeEl.innerHTML = '';
-
-  let first = true;
-  tree.forEach(rootNode => {
-    if (!first) {
-      const sep = document.createElement('div');
-      sep.className = 'separator';
-      treeEl.appendChild(sep);
-    }
-    treeEl.appendChild(buildProfileNode(rootNode, 0, openProfiles));
-    first = false;
-  });
+  renderTree(_tree, _openProfiles);
 }
 
 async function checkSSOStatus() {
@@ -236,6 +264,25 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   document.getElementById('btn-dismiss-error').addEventListener('click', hideError);
+
+  document.getElementById('profile-search').addEventListener('input', (e) => {
+    const q = e.target.value.trim().toLowerCase();
+    const treeEl = document.getElementById('profile-tree');
+    const noConfig = document.getElementById('no-config');
+    if (!_tree.length) return;
+    const filtered = q
+      ? _tree.map(n => filterNode(n, q)).filter(Boolean)
+      : _tree;
+    if (filtered.length === 0) {
+      treeEl.classList.add('hidden');
+      noConfig.classList.remove('hidden');
+      document.querySelector('#no-config p').textContent = 'No profiles match.';
+    } else {
+      noConfig.classList.add('hidden');
+      treeEl.classList.remove('hidden');
+      renderTree(filtered, _openProfiles);
+    }
+  });
 
   document.getElementById('btn-cancel-sso').addEventListener('click', async () => {
     await sendMessage({ type: 'CANCEL_SSO' });

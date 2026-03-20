@@ -154,6 +154,34 @@ h1 {
   word-break: break-word;
 }
 
+/* Search Bar */
+#search-bar {
+  padding: 6px 8px;
+  background: #16213e;
+  border-bottom: 1px solid #0f3460;
+  flex-shrink: 0;
+}
+
+#profile-search {
+  width: 100%;
+  background: #1a1a2e;
+  border: 1px solid #0f3460;
+  border-radius: 4px;
+  color: #e0e0e0;
+  font-size: 12px;
+  padding: 5px 8px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+#profile-search::placeholder {
+  color: #555;
+}
+
+#profile-search:focus {
+  border-color: #5dade2;
+}
+
 /* Profile Container */
 #profile-container {
   flex: 1;
